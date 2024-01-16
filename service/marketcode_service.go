@@ -15,7 +15,7 @@ func ApplycodeHandler(w http.ResponseWriter, r *http.Request) {
 	result, err := getStableAccessToken()
 	if err != nil {
 		fmt.Fprint(w, err)
-		return
+		result.ErrMsg = err.Error()
 	}
 	res.Data = result
 	msg, err := json.Marshal(res)
