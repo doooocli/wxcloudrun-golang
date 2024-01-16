@@ -72,7 +72,7 @@ type Applycode struct {
 func marketcodeApplycode() (*Applycode, error) {
 
 	jsonStr := []byte(`{"code_count": 10000, "isv_application_id": "order001"}`)
-	resp, err := http.Post("https://api.weixin.qq.com/intp/marketcode/applycode?access_token=ACCESSTOKEN", "application/json", bytes.NewBuffer(jsonStr))
+	resp, err := http.Post("http://api.weixin.qq.com/intp/marketcode/applycode", "application/json", bytes.NewBuffer(jsonStr))
 
 	if err != nil {
 		return nil, err
