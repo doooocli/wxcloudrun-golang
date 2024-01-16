@@ -17,7 +17,7 @@ import (
 type JsonResult struct {
 	Code     int         `json:"code"`
 	ErrorMsg string      `json:"errorMsg,omitempty"`
-	Data     interface{} `json:"data"`
+	Data     interface{} `json:"content"`
 }
 
 // IndexHandler 计数器接口
