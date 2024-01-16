@@ -15,7 +15,7 @@ func ApplycodeHandler(w http.ResponseWriter, r *http.Request) {
 	result, err := getStableAccessToken()
 	if err != nil {
 		fmt.Fprint(w, err)
-		result.ErrMsg = err.Error()
+		return
 	}
 	res.Data = result
 	msg, err := json.Marshal(res)
@@ -36,6 +36,7 @@ type AccessTokenResult struct {
 
 // getStableAccessToken 获取稳定版接口调用凭据
 func getStableAccessToken() (*AccessTokenResult, error) {
+	return nil, fmt.Errorf("%s", "45678999")
 
 	jsonStr := []byte(`{ "grant_type": "client_credential", "appid": "` + conf.AppId + `", "secret": "` + conf.AppSecret + `" }`)
 	resp, err := http.Post("https://api.weixin.qq.com/cgi-bin/stable_token", "application/json", bytes.NewBuffer(jsonStr))
