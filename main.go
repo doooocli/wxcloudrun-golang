@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	"wxcloudrun-golang/service"
+	"wxcloudrun-golang/apis"
 )
 
 func main() {
@@ -11,7 +11,12 @@ func main() {
 	//	panic(fmt.Sprintf("mysql init failed with %+v", err))
 	//}
 
-	http.HandleFunc("/", service.ApplycodeHandler)
+	http.HandleFunc("/market_code/apply_code", apis.ApplyCodeHandler)
+	http.HandleFunc("/market_code/apply_code_query", apis.ApplyCodeQueryHandler)
+	http.HandleFunc("/market_code/apply_code_download", apis.GetApplyCodeDownloadHandler)
+	http.HandleFunc("/market_code/code_active", apis.CodeActiveHandler)
+	http.HandleFunc("/market_code/code_active_query", apis.CodeActiveQueryHandler)
+
 	//http.HandleFunc("/api/count", service.CounterHandler)
 
 	log.Fatal(http.ListenAndServe(":80", nil))
