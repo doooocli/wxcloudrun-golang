@@ -11,13 +11,39 @@ func main() {
 	//	panic(fmt.Sprintf("mysql init failed with %+v", err))
 	//}
 
-	http.HandleFunc("/market_code/apply_code", apis.ApplyCodeHandler)
-	http.HandleFunc("/market_code/apply_code_query", apis.ApplyCodeQueryHandler)
-	http.HandleFunc("/market_code/apply_code_download", apis.GetApplyCodeDownloadHandler)
-	http.HandleFunc("/market_code/code_active", apis.CodeActiveHandler)
-	http.HandleFunc("/market_code/code_active_query", apis.CodeActiveQueryHandler)
+	mux := http.NewServeMux()
 
-	//http.HandleFunc("/api/count", service.CounterHandler)
+	mux.HandleFunc("/market_code/apply_code", apis.ApplyCodeHandler)
+	mux.HandleFunc("/market_code/apply_code_query", apis.ApplyCodeQueryHandler)
+	mux.HandleFunc("/market_code/apply_code_download", apis.GetApplyCodeDownloadHandler)
+	mux.HandleFunc("/market_code/code_active", apis.CodeActiveHandler)
+	mux.HandleFunc("/market_code/code_active_query", apis.CodeActiveQueryHandler)
 
-	log.Fatal(http.ListenAndServe(":80", nil))
+	//mux.HandleFunc("/api/count", service.CounterHandler)
+
+	log.Fatal(http.ListenAndServe(":80", applyMiddleware(mux, errorHandlerMiddleware, authHandlerMiddleware)))
+}
+
+func errorHandlerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			}
+		}()
+		next.ServeHTTP(w, r)
+	})
+}
+
+func authHandlerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		next.ServeHTTP(w, r)
+	})
+}
+
+func applyMiddleware(handler http.Handler, middlewares ...func(http.Handler) http.Handler) http.Handler {
+	for _, middleware := range middlewares {
+		handler = middleware(handler)
+	}
+	return handler
 }

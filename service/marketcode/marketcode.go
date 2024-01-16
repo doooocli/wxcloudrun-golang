@@ -34,8 +34,7 @@ type Resp struct {
 }
 
 type AccessTokenResp struct {
-	ErrCode     int    `json:"errcode,omitempty"`
-	ErrMsg      string `json:"errmsg,omitempty"`
+	Resp
 	AccessToken string `json:"access_token,omitempty"`
 	ExpiresIn   int    `json:"expires_in,omitempty"`
 }
@@ -69,7 +68,6 @@ func GetApplyCode(param *ApplyCodeParam) (*ApplyCodeResp, error) {
 	result := &ApplyCodeResp{}
 	if err := httpSend("http://api.weixin.qq.com/intp/marketcode/applycode", param, result); err != nil {
 		return nil, err
-
 	}
 	return result, nil
 }
