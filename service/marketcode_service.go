@@ -1,7 +1,6 @@
 package service
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,11 +12,11 @@ import (
 func ApplycodeHandler(w http.ResponseWriter, r *http.Request) {
 	res := &JsonResult{}
 	result, err := getStableAccessToken()
-	if err != nil {
-		fmt.Fprint(w, err)
-		return
-	}
 	res.Data = result
+	if err != nil {
+		//fmt.Fprint(w, err)
+		res.ErrorMsg = err.Error()
+	}
 	msg, err := json.Marshal(res)
 	if err != nil {
 		fmt.Fprint(w, "内部错误")
@@ -37,8 +36,9 @@ type AccessTokenResult struct {
 // getStableAccessToken 获取稳定版接口调用凭据
 func getStableAccessToken() (*AccessTokenResult, error) {
 
-	jsonStr := []byte(`{ "grant_type": "client_credential", "appid": "` + conf.AppId + `", "secret": "` + conf.AppSecret + `" }`)
-	resp, err := http.Post("https://api.weixin.qq.com/cgi-bin/stable_token", "application/json", bytes.NewBuffer(jsonStr))
+	//jsonStr := []byte(`{ "grant_type": "client_credential", "appid": "` + conf.AppId + `", "secret": "` + conf.AppSecret + `" }`)
+	//resp, err := http.Post("https://api.weixin.qq.com/cgi-bin/stable_token", "application/json", bytes.NewBuffer(jsonStr))
+	resp, err := http.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + conf.AppId + "&secret=" + conf.AppSecret)
 	if err != nil {
 		return nil, err
 	}
