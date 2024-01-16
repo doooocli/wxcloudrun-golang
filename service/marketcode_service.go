@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,15 +12,35 @@ import (
 // ApplycodeHandler 申请二维码
 func ApplycodeHandler(w http.ResponseWriter, r *http.Request) {
 	res := &JsonResult{}
-	result, err := getStableAccessToken()
-	res.Data = result
+
+	//result, err := getStableAccessToken()
+	//res.Data = result
+
+	//jsonStr := []byte(`{"code_count": 10000, "isv_application_id": "order001"}`)
+	//resp, err := http.Post("https://api.weixin.qq.com/intp/marketcode/applycode?access_token=ACCESSTOKEN", "application/json", bytes.NewBuffer(jsonStr))
+	resp, err := http.Get("https://api.weixin.qq.com/intp/marketcode/applycode?access_token=ACCESSTOKEN")
+
 	if err != nil {
-		//fmt.Fprint(w, err)
-		res.ErrorMsg = err.Error()
+		fmt.Println(err)
+		return
 	}
+
+	if resp.StatusCode != http.StatusOK {
+		fmt.Println(resp.Status)
+		return
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	resp.Body.Close()
+
+	res.ErrorMsg = string(body)
 	msg, err := json.Marshal(res)
 	if err != nil {
-		fmt.Fprint(w, "内部错误")
+		fmt.Println(err)
 		return
 	}
 	w.Header().Set("content-type", "application/json")
@@ -36,9 +57,10 @@ type AccessTokenResult struct {
 // getStableAccessToken 获取稳定版接口调用凭据
 func getStableAccessToken() (*AccessTokenResult, error) {
 
-	//jsonStr := []byte(`{ "grant_type": "client_credential", "appid": "` + conf.AppId + `", "secret": "` + conf.AppSecret + `" }`)
-	//resp, err := http.Post("https://api.weixin.qq.com/cgi-bin/stable_token", "application/json", bytes.NewBuffer(jsonStr))
-	resp, err := http.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + conf.AppId + "&secret=" + conf.AppSecret)
+	jsonStr := []byte(`{ "grant_type": "client_credential", "appid": "` + conf.AppId + `", "secret": "` + conf.AppSecret + `" }`)
+	resp, err := http.Post("https://api.weixin.qq.com/cgi-bin/stable_token", "application/json", bytes.NewBuffer(jsonStr))
+
+	//resp, err := http.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + conf.AppId + "&secret=" + conf.AppSecret)
 	if err != nil {
 		return nil, err
 	}
