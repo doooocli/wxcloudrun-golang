@@ -9,10 +9,15 @@ import (
 	"wxcloudrun-golang/conf"
 )
 
-// 申请二维码
+// ApplycodeHandler 申请二维码
 func ApplycodeHandler(w http.ResponseWriter, r *http.Request) {
 	res := &JsonResult{}
-	res.Data, _ = getStableAccessToken()
+	result, err := getStableAccessToken()
+	if err != nil {
+		fmt.Fprint(w, err)
+		return
+	}
+	res.Data = result
 	msg, err := json.Marshal(res)
 	if err != nil {
 		fmt.Fprint(w, "内部错误")
