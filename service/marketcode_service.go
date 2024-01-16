@@ -43,6 +43,7 @@ func ApplycodeHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
+
 	w.Header().Set("content-type", "application/json")
 	w.Write(msg)
 }
