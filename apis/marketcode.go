@@ -51,3 +51,12 @@ func CodeActiveQueryHandler(w http.ResponseWriter, r *http.Request) {
 		response.NewResponse(w).OK(result)
 	}
 }
+
+// TicketToCodeHandler 二维码激活查询
+func TicketToCodeHandler(w http.ResponseWriter, r *http.Request) {
+	param := &marketcode.TicketToCodeParam{}
+	json.NewDecoder(r.Body).Decode(param)
+	if result, err := marketcode.TicketToCode(param); err == nil {
+		response.NewResponse(w).OK(result)
+	}
+}

@@ -18,6 +18,7 @@ func main() {
 	mux.HandleFunc("/market_code/apply_code_download", apis.GetApplyCodeDownloadHandler)
 	mux.HandleFunc("/market_code/code_active", apis.CodeActiveHandler)
 	mux.HandleFunc("/market_code/code_active_query", apis.CodeActiveQueryHandler)
+	mux.HandleFunc("/market_code/ticket_to_code", apis.TicketToCodeHandler)
 
 	//mux.HandleFunc("/api/count", service.CounterHandler)
 

@@ -28,6 +28,11 @@ type CodeActiveParam struct {
 	WxaType      int    `json:"wxa_type,omitempty"`      //小程序版本
 }
 
+type TicketToCodeParam struct {
+	OpenId     int    `json:"openid"`
+	CodeTicket string `json:"code_ticket"`
+}
+
 type Resp struct {
 	ErrCode int    `json:"errcode,omitempty"`
 	ErrMsg  string `json:"errmsg,omitempty"`
@@ -136,6 +141,15 @@ type CodeActiveQueryResp struct {
 func CodeActiveQuery(param *ApplyCodeParam) (*CodeActiveQueryResp, error) {
 	result := &CodeActiveQueryResp{}
 	if err := httpSend("http://api.weixin.qq.com/intp/marketcode/codeactivequery", param, result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// TicketToCode code_ticket换code
+func TicketToCode(param *TicketToCodeParam) (*CodeActiveQueryResp, error) {
+	result := &CodeActiveQueryResp{}
+	if err := httpSend("https://api.weixin.qq.com/intp/marketcode/tickettocode", param, result); err != nil {
 		return nil, err
 	}
 	return result, nil
